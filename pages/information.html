@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>VK диаграммы</title>
+    <link rel="stylesheet" href="../css/jquery-ui.css">
+    <script src="../js/libs/jquery.min.js"></script>
+    <script src="../js/libs/jquery-ui.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,600&subset=latin,cyrillic-ext' rel='stylesheet' type='text/css'>
+    <style>
+      html {
+          font-family: "Open Sans";
+      }
+      a {
+          color: #59ABE3;
+          margin-right: 10px;
+      }
+
+      a:last-child {
+           margin-right: 0px;
+      }
+
+      #slider {
+        height: 7px;
+        border-radius: 5px;
+        background: #efefef;
+        border-color: transparent;
+      }
+
+      .centered {
+        margin: 0 auto;
+      }
+
+      .left {
+          float: left;
+      }
+
+      .right {
+          float: right;
+      }
+
+      .col-6 {
+          width: 49.5%;
+      }
+
+      .col-4 {
+          width: 33.333333%;
+      }
+
+      .col-3 {
+          width: 25%;
+      }
+
+      .clear {
+          width: 100%;
+          height: 30px;
+      }
+
+      .wrapper {
+          width: 968px;
+          margin: 0px auto;
+      }
+
+      .age {
+          margin-top: 10px;
+      }
+
+      .text-left {
+          text-align: left;
+      }
+
+      .text-right {
+          text-align: right;
+      }
+
+      .text-center {
+          text-align: center;
+      }
+
+      .lined {
+           display: inline-block;
+           position: relative;
+      }
+
+      .lined-vertical {
+          vertical-align: middle;
+      }
+
+      .profile > .img {
+          width: 100px;
+          height: 100px;
+          background-size: cover;
+          border-radius: 100%;
+      }
+
+      .ui-slider-handle {
+          border-radius: 100%;
+          background: #59ABE3 !important;
+          border: 0 !important;
+          width: 15px !important;
+          height: 15px !important;
+      }
+
+      .ui-slider-horizontal .ui-slider-range {
+        background: #ADD5F1 !important;
+      }
+
+      .user-description a {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <h1>Настройки</h1>
+
+      <div class="clear"></div>
+      <div class="col-6">
+        <h2>Профиль</h2>
+        <div class="profile text-left col-3 lined lined-vertical">
+          <div class="img left avatar" style="background-image: url('http://vk.com/images/camera_400.gif');"></div>
+        </div>
+        <div class="text-left col-4 lined lined-vertical">
+          <div class="user-auth">
+            <a class="auth" href="">Авторизоваться</a>
+          </div>
+          <div class="user-description">
+            <a class="name" href="#">Профиль</a>
+            <a class="logout" href="#">Выйти</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="clear"></div>
+      <div class="col-6">
+        <h2>Возраст</h2>
+        <div id="slider"></div>
+        <div class="age text-left col-4 left">14</div>
+        <div class="age age-value text-center col-4 left"></div>
+        <div class="age text-right col-4 left">80</div>
+      </div>
+
+      <div class="clear"></div>
+      <div class="col-6">
+        <h2>Стандартное состояние</h2>
+        <div>
+          <select class="chart-state">
+            <option>Статистика возрастов</option>
+            <option>Статистика университетов</option>
+            <option>Статистика школ</option>
+            <option>Скрыть</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="../js/information.js"></script>
+  </body>
+</html>
