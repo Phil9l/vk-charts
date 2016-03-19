@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "VK Charts",
   "description": "Диаграмы VK.",
-  "version": "1.0",
+  "version": "1.0.1",
   "permissions": [
     "tabs",
     "storage",

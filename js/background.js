@@ -94,7 +94,7 @@ function changeDefaultState(stateIndex) {
 
 /** Returns default chart state. */
 function getDefaultState() {
-    return localStorage.stateIndex || 0;
+    return (localStorage.stateIndex - 0 == localStorage.stateIndex) ? localStorage.stateIndex : 0;
 }
 
 /** Handles data from client. */
@@ -147,7 +147,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
         }
         params.push(request[params_list[i]]);
     }
-    sendResponse(func.apply(this, params) || {});
+    var result = func.apply(this, params);
+    sendResponse(typeof result !== 'undefined' ? result : {});
 });
 
 /** Opening settings on icon click. */

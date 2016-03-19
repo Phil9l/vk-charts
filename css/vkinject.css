@@ -1,3 +1,112 @@
-.friends-select {
-  margin: 10px;
+.usual-overflow {
+  overflow: visible !important;
+}
+
+/* --------------------------------------------------------------------------- */
+
+.friends-chart-wrapper-dropdown {
+    /* Size & position */
+    position: relative;
+    width: 160px;
+    margin: 0 auto;
+    margin-left: -15px;
+    margin-top: -5px;
+    padding: 6px 15px;
+
+    z-index: 13;
+
+    /* Styles */
+    font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
+    font-size: 11px;
+    color: #2B587A;
+    cursor: pointer;
+    outline: none;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+}
+
+.friends-chart-wrapper-dropdown i{
+    font-size: 15px;
+}
+
+.friends-chart-wrapper-dropdown:after { /* Little arrow */
+    content: "";
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 58%;
+    right: 10px;
+    margin-top: -3px;
+    border-width: 4px 4px 0 4px;
+    border-style: solid;
+    border-color: #2B587A transparent;
+}
+
+.friends-chart-wrapper-dropdown .friends-chart-dropdown {
+    /* Size & position */
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    padding-left: 0px;
+
+    /* Styles */
+    background: #fff;
+    border-radius: 0 0 5px 5px;
+    border: 1px solid rgba(0,0,0,0.2);
+    border-top: none;
+    border-bottom: none;
+    list-style: none;
+    -webkit-transition: all 0.3s ease-out;
+    -moz-transition: all 0.3s ease-out;
+    -ms-transition: all 0.3s ease-out;
+    -o-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+
+    /* Hiding */
+    max-height: 0;
+    overflow: hidden;
+
+    margin: 0;
+}
+
+.friends-chart-wrapper-dropdown .friends-chart-dropdown li a {
+    display: block;
+    text-decoration: none;
+    color: #2B587A;
+    padding: 5px 10px;
+    transition: all 0.3s ease-out;
+}
+
+.friends-chart-wrapper-dropdown .friends-chart-dropdown li:last-of-type a {
+    border: none;
+}
+
+.friends-chart-wrapper-dropdown .friends-chart-dropdown li i {
+    margin-right: 5px;
+    color: inherit;
+    vertical-align: middle;
+}
+
+/* Hover state */
+
+.friends-chart-wrapper-dropdown .friends-chart-dropdown li:hover a {
+    background: #e1e7ed;
+}
+
+/* Active state */
+
+.friends-chart-wrapper-dropdown.active {
+    border-radius: 5px 5px 0 0;
+    background: #EDF1F5;
+    box-shadow: none;
+    border-bottom: none;
+}
+
+.friends-chart-wrapper-dropdown.active .friends-chart-dropdown {
+    border-bottom: 1px solid rgba(0,0,0,0.2);
+    max-height: 400px;
 }

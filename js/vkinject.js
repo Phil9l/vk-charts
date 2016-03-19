@@ -157,26 +157,86 @@ function addSchoolStatistic(response) {
     });
 }
 
+function DropDown(el) {
+    this.dd = el;
+    this.initEvents();
+}
+DropDown.prototype = {
+    initEvents : function() {
+        var obj = this;
+        obj.dd.on('click', function(event){
+            $(this).toggleClass('active');
+            if ($(event.target).is('a')){
+                $('.friend-statistic').hide();
+                $('.friend-statistic[statistic-type="' + $(event.target).attr('statistic-type') + '"]').show();
+                $('.friends-chart-current-choice').text($(event.target).text());
+            }
+            event.stopPropagation();
+        });
+    }
+};
+
 function renderCharts() {
     var user = document.location.pathname.slice(1);
     chrome.runtime.sendMessage({method: "isUser", user: user}, function(user_response) {
         if (!$.isEmptyObject(user_response)) {
             $('#profile_short').before('<div class="friend-statistic-container"></div>');
-            $('.friend-statistic-container').append('<div class="friends-select"><select id="friends-select-list"></select></div>');
+            $('.friend-statistic-container').append(
+                '<div class="profile_info"><div class="clear_fix">' +
+                    '<div class="label fl_l">Статистика по друзьям:</div>' +
+                    '<div class="labeled fl_l usual-overflow">' +
+                        '<div id="fcdd" class="friends-chart-wrapper-dropdown"><span class="friends-chart-current-choice">Показать статистику</span>' +
+                            '<ul class="friends-chart-dropdown">' +
+                            '</ul>' +
+                        '</div>' +
+                    '</div>' +
+                '</div></div>'
+            );
+
+            var dd = new DropDown($('#fcdd'));
+            $(document).click(function() {
+                $('.friends-chart-wrapper-dropdown').removeClass('active');
+            });
 
             chrome.runtime.sendMessage({method: "getDefaultState"}, function(stateIndex) {
-                addOption("#friends-select-list", "age", "Статистика возрастов", +stateIndex === 0);
-                addOption("#friends-select-list", "universities", "Статистика университетов", +stateIndex === 1);
-                addOption("#friends-select-list", "schools", "Статистика школ", +stateIndex === 2);
-                addOption("#friends-select-list", "empty", "Скрыть", +stateIndex === 3);
+                var options = [
+                    {
+                        'name': 'Скрыто',
+                        'statistic_type': 'Empty',
+                        'hasCanvas': false,
+                    }, {
+                        'name': 'Статистика возрастов',
+                        'statistic_type': 'age',
+                        'hasCanvas': true,
+                        'width': 400,
+                        'height': 250,
+                    }, {
+                        'name': 'Статистика университетов',
+                        'statistic_type': 'universities',
+                        'hasCanvas': true,
+                        'width': 400,
+                        'height': 350,
+                    }, {
+                        'name': 'Статистика школ',
+                        'statistic_type': 'schools',
+                        'hasCanvas': true,
+                        'width': 400,
+                        'height': 350,
+                    }
+                ];
 
+                for (var option = 0; option < options.length; option++) {
+                    $('.friends-chart-dropdown').append('<li class="friends-chart-dropdown-item"><a statistic-type="' + options[option].statistic_type + '" href="#">' + options[option].name + '</a></li>');
+                }
+                $('.friends-chart-current-choice').text(options[stateIndex].name);
+
+                // TODO: rewrite with one cycle
+                $('.friend-statistic-container').append('<div statistic-type="empty" class="friend-empty-statistic friend-statistic"></div>');
                 $('.friend-statistic-container').append('<div statistic-type="age" class="friend-age-statistic friend-statistic"><canvas id="friend-age-chart" width="400" height="250"></canvas></div>');
                 $('.friend-statistic-container').append('<div statistic-type="universities" class="friend-university-statistic friend-statistic"><canvas id="friend-university-chart" width="400" height="350"></canvas></div>');
                 $('.friend-statistic-container').append('<div statistic-type="schools" class="friend-school-statistic friend-statistic"><canvas id="friend-school-chart" width="400" height="350"></canvas></div>');
-                $('.friend-statistic-container').append('<div statistic-type="empty" class="friend-empty-statistic friend-statistic"></div>');
 
                 $('.friend-statistic').hide();
-                //$('.friend-statistic:eq(' + (+stateIndex + 1) + ')').show();
                 $('.friend-statistic:eq(' + stateIndex + ')').show();
 
                 chrome.runtime.sendMessage({method: "getFriendsInfo", user: user_response[0].uid}, function(response) {
@@ -187,10 +247,11 @@ function renderCharts() {
             });
         }
     });
-    $('#profile_info').on('change', '#friends-select-list', function() {
-        $('.friend-statistic').hide();
-        $('.friend-statistic[statistic-type="' + $('#friends-select-list').val() + '"]').show();
-    });
+
+//    $('#profile_info').on('change', '#friends-select-list', function() {
+//        $('.friend-statistic').hide();
+//        $('.friend-statistic[statistic-type="' + $('#friends-select-list').val() + '"]').show();
+//    });
 }
 
 setInterval(function () {

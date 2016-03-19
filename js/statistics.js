@@ -112,7 +112,8 @@ function getCurrentUserInfo() {
         clearSession();
         tmpProfile = sendRequest(url);
     }
-    var profile = (typeof tmpProfile !== 'undefined') ? sendRequest(url)[0] || {} : {};
+
+    var profile = (typeof tmpProfile !== 'undefined') ? tmpProfile[0] || {} : {};
     return profile;
 }
 
@@ -125,9 +126,9 @@ function isUser(username) {
     var access_token = getAccessToken();
     var url = 'https://api.vk.com/method/users.get?user_ids=' + username + '&access_token=' + access_token;
     var resp = sendRequest(url);
-    if (!resp) {
+    if (resp === null) {
         clearSession();
         resp = sendRequest(url);
     }
-    return resp;
+    return resp || {};
 }
