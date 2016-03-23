@@ -1,4 +1,4 @@
-var MAX_LEGEND_STRING_LENGTH = 26;
+var MAX_LEGEND_STRING_LENGTH = 25;
 var MAX_LEGEND_ITEMS_NUMBER = 18;
 var UPDATE_TIMEOUT = 100;
 
@@ -54,14 +54,17 @@ function sortObject(obj, size) {
     return resp;
 }
 
-function addOption(selector, key, value, selected) {
-    $(selector).append(
-        $("<option" + (selected ? " selected" : "") + "></option>").attr("value", key).text(value)
-    );
+
+
+function fmtChartJSPerso(config, value, fmt){
+    if (fmt === "Cutting") {
+        return value.length <= MAX_LEGEND_STRING_LENGTH ? value : value.substring(0, MAX_LEGEND_STRING_LENGTH - 3) + '...';
+    }
+    return value;
 }
 
-function addAgeStatistic(response) {
-    var ctx = $("#friend-age-chart").get(0).getContext("2d");
+function drawBarChart(response, selector) {
+    var ctx = $(selector).get(0).getContext("2d");
     var data = {
         labels: [],
         datasets: [
@@ -95,11 +98,11 @@ function addAgeStatistic(response) {
             },
         ]
     };
-    for (var age in response) {
-        if (age && !isNaN(age)) {
-            data.labels.push(age);
+    for (var item in response) {
+        if (item && !isNaN(item)) {
+            data.labels.push(item);
             for (var gender = 0; gender < 3; gender++) {
-                data.datasets[gender].data.push(response[age][gender]);
+                data.datasets[gender].data.push(response[item][gender]);
             }
         }
     }
@@ -108,43 +111,15 @@ function addAgeStatistic(response) {
     });
 }
 
-function fmtChartJSPerso(config, value, fmt){
-    if (fmt === "Cutting") {
-        return value.length <= MAX_LEGEND_STRING_LENGTH ? value : value.substring(0, MAX_LEGEND_STRING_LENGTH - 3) + '...';
-    }
-    return value;
-}
-
-function addUniversityStatistic(response) {
-    var ctx = $("#friend-university-chart").get(0).getContext("2d");
+function drawPieChart(response, selector) {
+    var ctx = $(selector).get(0).getContext("2d");
     response = sortObject(response, MAX_LEGEND_ITEMS_NUMBER);
     var data = [];
 
-    for (var university in response) {
+    for (var item in response) {
         data.push({
-            label: university,
-            value: response[university],
-            color: generateRandomColor(255, 255, 255)
-        });
-    }
-    var myLineChart = new Chart(ctx).Pie(data, {
-        legend: true,
-        annotateDisplay: true,
-        highLight: true,
-        fmtLegend : "Cutting",
-        maxLegendCols: 2,
-    });
-}
-
-function addSchoolStatistic(response) {
-    var ctx = $("#friend-school-chart").get(0).getContext("2d");
-    response = sortObject(response, MAX_LEGEND_ITEMS_NUMBER);
-    var data = [];
-
-    for (var school in response) {
-        data.push({
-            label: school,
-            value: response[school],
+            label: item,
+            value: response[item],
             color: generateRandomColor(255, 255, 255)
         });
     }
@@ -181,17 +156,19 @@ function renderCharts() {
     chrome.runtime.sendMessage({method: "isUser", user: user}, function(user_response) {
         if (!$.isEmptyObject(user_response)) {
             $('#profile_short').before('<div class="friend-statistic-container"></div>');
-            $('.friend-statistic-container').append(
-                '<div class="profile_info"><div class="clear_fix">' +
-                    '<div class="label fl_l">Статистика по друзьям:</div>' +
-                    '<div class="labeled fl_l usual-overflow">' +
-                        '<div id="fcdd" class="friends-chart-wrapper-dropdown"><span class="friends-chart-current-choice">Показать статистику</span>' +
-                            '<ul class="friends-chart-dropdown">' +
-                            '</ul>' +
+            if ($('#friends-chart-dropdown') !== 0) {
+                $('.friend-statistic-container').append(
+                    '<div class="profile_info"><div class="clear_fix">' +
+                        '<div class="label fl_l">Статистика по друзьям:</div>' +
+                        '<div class="labeled fl_l usual-overflow">' +
+                            '<div id="fcdd" class="friends-chart-wrapper-dropdown"><span class="friends-chart-current-choice">Показать статистику</span>' +
+                                '<ul id="friends-chart-dropdown" class="friends-chart-dropdown">' +
+                                '</ul>' +
+                            '</div>' +
                         '</div>' +
-                    '</div>' +
-                '</div></div>'
-            );
+                    '</div></div>'
+                );
+            }
 
             var dd = new DropDown($('#fcdd'));
             $(document).click(function() {
@@ -202,61 +179,68 @@ function renderCharts() {
                 var options = [
                     {
                         'name': 'Скрыто',
-                        'statistic_type': 'Empty',
-                        'hasCanvas': false,
+                        'statistics_type': 'empty',
+                        'canvasType': 'None',
+                    }, {
+                        'name': 'Статистика городов',
+                        'statistics_type': 'cities',
+                        'canvasType': 'Pie',
+                        'width': 400,
+                        'height': 350,
                     }, {
                         'name': 'Статистика возрастов',
-                        'statistic_type': 'age',
-                        'hasCanvas': true,
+                        'statistics_type': 'age',
+                        'canvasType': 'Bar',
                         'width': 400,
                         'height': 250,
                     }, {
                         'name': 'Статистика университетов',
-                        'statistic_type': 'universities',
-                        'hasCanvas': true,
+                        'statistics_type': 'universities',
+                        'canvasType': 'Pie',
                         'width': 400,
                         'height': 350,
                     }, {
                         'name': 'Статистика школ',
-                        'statistic_type': 'schools',
-                        'hasCanvas': true,
+                        'statistics_type': 'schools',
+                        'canvasType': 'Pie',
                         'width': 400,
                         'height': 350,
-                    }
+                    },
                 ];
 
                 for (var option = 0; option < options.length; option++) {
-                    $('.friends-chart-dropdown').append('<li class="friends-chart-dropdown-item"><a statistic-type="' + options[option].statistic_type + '" href="#">' + options[option].name + '</a></li>');
+                    $('.friends-chart-dropdown').append('<li class="friends-chart-dropdown-item"><a statistic-type="' + options[option].statistics_type + '" href="#">' + options[option].name + '</a></li>');
                 }
                 $('.friends-chart-current-choice').text(options[stateIndex].name);
 
-                // TODO: rewrite with one cycle
-                $('.friend-statistic-container').append('<div statistic-type="empty" class="friend-empty-statistic friend-statistic"></div>');
-                $('.friend-statistic-container').append('<div statistic-type="age" class="friend-age-statistic friend-statistic"><canvas id="friend-age-chart" width="400" height="250"></canvas></div>');
-                $('.friend-statistic-container').append('<div statistic-type="universities" class="friend-university-statistic friend-statistic"><canvas id="friend-university-chart" width="400" height="350"></canvas></div>');
-                $('.friend-statistic-container').append('<div statistic-type="schools" class="friend-school-statistic friend-statistic"><canvas id="friend-school-chart" width="400" height="350"></canvas></div>');
+                for (var option = 0; option < options.length; option++) {
+                    var divString = '<div statistic-type="' + options[option].statistics_type + '" class="friend-' + options[option].statistics_type + '-statistic friend-statistic">';
+                    if (options[option].canvasType !== 'None') {
+                        divString += '<canvas id="friend-' + options[option].statistics_type + '-chart" width="' + options[option].width + '" height="' + options[option].height + '"></canvas>';
+                    }
+                    divString += '</div>';
+                    $('.friend-statistic-container').append(divString);
+                }
 
                 $('.friend-statistic').hide();
                 $('.friend-statistic:eq(' + stateIndex + ')').show();
 
                 chrome.runtime.sendMessage({method: "getFriendsInfo", user: user_response[0].uid}, function(response) {
-                    addAgeStatistic(response.ages);
-                    addUniversityStatistic(response.universities);
-                    addSchoolStatistic(response.schools);
+                    drawBarChart(response.ages, "#friend-age-chart");
+                    drawPieChart(response.universities, "#friend-universities-chart");
+                    drawPieChart(response.schools, "#friend-schools-chart");
+                    drawPieChart(response.cities, "#friend-cities-chart");
                 });
             });
         }
     });
-
-//    $('#profile_info').on('change', '#friends-select-list', function() {
-//        $('.friend-statistic').hide();
-//        $('.friend-statistic[statistic-type="' + $('#friends-select-list').val() + '"]').show();
-//    });
 }
 
 setInterval(function () {
     if ($('#profile_short').length !== 0 && $('.vk-statistics-was-used').length === 0 && $('.friend-statistic-container').length === 0) {
-        $('#profile_short').append('<div class="vk-statistics-was-used"></div>');
-        renderCharts();
+        $('#profile_short .profile_info').append('<div class="clear_fix vk-statistics-was-used"></div>');
+        setTimeout(function () {
+            renderCharts();
+        }, UPDATE_TIMEOUT);
     }
 }, UPDATE_TIMEOUT);

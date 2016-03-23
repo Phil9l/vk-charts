@@ -24,6 +24,25 @@ function sendRequest(url) {
     return result;
 }
 
+function buildURL(url, params) {
+    for (var item in params) {
+        url += item + '=' + params[item] + '&';
+    }
+    return url;
+}
+
+function sendAPIRequest(method, params, maxnumber) {
+    var url = buildURL('https://api.vk.com/method/' + method + '?', params);
+    var resp = sendRequest(url);
+    if (resp === null) {
+        clearSession();
+        delete params.access_token;
+        url = buildURL('https://api.vk.com/method/' + method + '?', params);
+        resp = sendRequest(url);
+    }
+    return resp;
+}
+
 /**
  * Gets age by date of birth.
  * @param {date} bdate - Date of birth.

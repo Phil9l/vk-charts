@@ -11,6 +11,11 @@
     "https://*.vk.com/*",
     "https://vk.com/*"
   ],
+  "icons": {
+    "48": "images/icons/icon48.png",
+    "64": "images/icons/icon64.png",
+    "256": "images/icons/icon256.png"
+  },
   "content_security_policy": "script-src 'self' 'unsafe-eval'; object-src 'self'",
   "background": {
     "scripts": [
@@ -26,9 +31,6 @@
     }
   ],
   "browser_action": {
-    "default_icon": {
-      "38": "images/icons/icon38.png"
-    },
     "default_title": "Диаграмы VK"
   }
 }

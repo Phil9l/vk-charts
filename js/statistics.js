@@ -45,21 +45,29 @@ function getFriendsAges(data) {
     return ages;
 }
 
+function getFriendsData(data, field, informationField) {
+    var result = {};
+    for (var i = 0; i < data.length; i++) {
+        if (field in data[i]) {
+            if (Array.isArray(data[i][field])) {
+                for (itemInd = 0; itemInd < data[i][field].length; itemInd++) {
+                    result[data[i][field][itemInd][informationField]] = (result[data[i][field][itemInd][informationField]] | 0) + 1;
+                }
+            } else {
+                result[data[i][field]] = (result[data[i][field]] | 0) + 1;
+            }
+        }
+    }
+    return result;
+}
+
 /**
  * Returns number of people from every university.
  * @param {object} data - Information about users, generated with getFriendsInfo function.
  * @return {object} - Number of people from every university.
  */
 function getFriendsUniversities(data) {
-    var universities = {};
-    for (var i = 0; i < data.length; i++) {
-        if ('universities' in data[i]) {
-            for (uind = 0; uind < data[i].universities.length; uind++) {
-                universities[data[i].universities[uind].name] = (universities[data[i].universities[uind].name] | 0) + 1;
-            }
-        }
-    }
-    return universities;
+   return getFriendsData(data, 'universities', 'name');
 }
 
 /**
@@ -68,15 +76,26 @@ function getFriendsUniversities(data) {
  * @return {object} - Number of people from every school.
  */
 function getFriendsSchools(data) {
-    var schools = {};
-    for (var i = 0; i < data.length; i++) {
-        if ('schools' in data[i]) {
-            for (sind = 0; sind < data[i].schools.length; sind++) {
-                schools[data[i].schools[sind].name] = (schools[data[i].schools[sind].name] | 0) + 1;
-            }
-        }
+    return getFriendsData(data, 'schools', 'name');
+}
+
+/**
+ * Returns number of people from every city.
+ * @param {object} data - Information about users, generated with getFriendsInfo function.
+ * @return {object} - Number of people from every city.
+ */
+function getFriendsCities(data) {
+    var cities = getFriendsData(data, 'city');
+    var cityids = [];
+    for (var city in cities) {
+        cityids.push(city);
     }
-    return schools;
+    var citynames = sendAPIRequest('database.getCitiesById', {'city_ids': cityids.join(',')});
+    var result = {};
+    for (var cityInd in citynames) {
+        result[citynames[cityInd].name] = cities[citynames[cityInd].cid];
+    }
+    return result;
 }
 
 /**
@@ -86,16 +105,17 @@ function getFriendsSchools(data) {
  */
 function getFriendsInfo(user_id) {
     var access_token = getAccessToken();
-    var url = 'https://api.vk.com/method/friends.get?user_id=' + user_id + '&fields=bdate,universities,schools,sex&access_token=' + access_token;
-    var friends = sendRequest(url);
+    var fields = 'bdate,universities,schools,sex,city';
+    var friends = sendAPIRequest('friends.get', {'fields': fields, 'user_id': user_id, 'access_token': access_token});
     if (!friends) {
         clearSession();
-        friends = sendRequest(url);
+        friends = sendAPIRequest('friends.get', {'fields': fields, 'user_id': user_id});
     }
     var response = {
         ages: getFriendsAges(friends),
         universities: getFriendsUniversities(friends),
-        schools: getFriendsSchools(friends)
+        schools: getFriendsSchools(friends),
+        cities: getFriendsCities(friends),
     };
     return response;
 }
@@ -106,13 +126,8 @@ function getFriendsInfo(user_id) {
  */
 function getCurrentUserInfo() {
     var access_token = getAccessToken();
-    var url = 'https://api.vk.com/method/users.get?fields=first_name,last_name,id,photo_max&access_token=' + access_token;
-    var tmpProfile = sendRequest(url);
-    if (!tmpProfile) {
-        clearSession();
-        tmpProfile = sendRequest(url);
-    }
-
+    var fields = 'first_name,last_name,id,photo_max';
+    var tmpProfile = sendAPIRequest('users.get', {'fields': fields, 'access_token': access_token});
     var profile = (typeof tmpProfile !== 'undefined') ? tmpProfile[0] || {} : {};
     return profile;
 }
@@ -124,11 +139,6 @@ function getCurrentUserInfo() {
  */
 function isUser(username) {
     var access_token = getAccessToken();
-    var url = 'https://api.vk.com/method/users.get?user_ids=' + username + '&access_token=' + access_token;
-    var resp = sendRequest(url);
-    if (resp === null) {
-        clearSession();
-        resp = sendRequest(url);
-    }
+    var resp = sendAPIRequest('users.get', {'user_ids': username, 'access_token': access_token});
     return resp || {};
 }
