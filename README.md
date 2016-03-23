@@ -7,11 +7,10 @@
 
 Скриншоты
 ---------
-![Превью](/.screenshots/Screenshot-1.png?raw=true "Превью")
-![Статистика возрастов](/.screenshots/Screenshot-2.png?raw=true "Статистика возрастов")
+![Превью](/.screenshots/Screenshot-1.png?raw=true "Превью" =350x)
+![Меню](/.screenshots/Screenshot-4.png?raw=true "Меню" =350x)
+![Настройки](/.screenshots/Screenshot-5.png?raw=true "Настройки" =350x)
 ![Статистика университетов](/.screenshots/Screenshot-3.png?raw=true "Статистика университетов")
-![Меню](/.screenshots/Screenshot-4.png?raw=true "Меню")
-![Настройки](/.screenshots/Screenshot-5.png?raw=true "Настройки")
 
 Виды статистик
 -------------
