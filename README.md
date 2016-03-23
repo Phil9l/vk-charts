@@ -7,8 +7,8 @@
 
 Скриншоты
 ---------
-![](/.screenshots/Screenshot-1.png?raw=true =350x)
-![](/.screenshots/Screenshot-5.png?raw=true =350x)
+<img src="/.screenshots/Screenshot-1.png?raw=true" width="350"/>
+<img src="/.screenshots/Screenshot-5.png?raw=true" width="350"/>
 ![](/.screenshots/Screenshot-4.png?raw=true)
 ![](/.screenshots/Screenshot-3.png?raw=true)
 
