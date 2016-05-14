@@ -1,8 +1,6 @@
 var MAX_LEGEND_STRING_LENGTH = 25;
 var MAX_LEGEND_ITEMS_NUMBER = 18;
 var UPDATE_TIMEOUT = 100;
-var OLD_SELECTOR = '#profile_short .profile_info';
-var NEW_SELECTOR = '#profile_short';
 
 /**
  * Pads string with zeroes upto given length.
@@ -240,10 +238,9 @@ function renderCharts(version) {
 }
 
 function injectToPage(version) {
-    var injectBlockSelector = version === 'old' ? OLD_SELECTOR : NEW_SELECTOR;
-
+    console.log($('.vk-statistics-was-used').length);
     if ($('#profile_short').length !== 0 && $('.vk-statistics-was-used').length === 0 && $('.friend-statistic-container').length === 0) {
-        $(injectBlockSelector).append('<div class="clear_fix vk-statistics-was-used"></div>');
+        $('#profile_short').append('<div class="clear_fix vk-statistics-was-used"></div>');
         setTimeout(function () {
             renderCharts(version);
         }, UPDATE_TIMEOUT);

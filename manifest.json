@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "VK Charts",
   "description": "Allows to see statistics based on user vk profile.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "permissions": [
     "tabs",
     "storage",
