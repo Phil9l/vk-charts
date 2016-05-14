@@ -141,7 +141,7 @@ DropDown.prototype = {
         var obj = this;
         obj.dd.on('click', function(event){
             $(this).toggleClass('active');
-            if ($(event.target).is('span')){
+            if ($(event.target).is('span') && typeof $(event.target).attr('statistic-type') !== 'undefined') {
                 $('.friend-statistic').hide();
                 $('.friend-statistic[statistic-type="' + $(event.target).attr('statistic-type') + '"]').show();
                 $('.friends-chart-current-choice').text($(event.target).text());

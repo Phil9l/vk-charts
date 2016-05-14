@@ -16,4 +16,5 @@
 * Статиска школ
 
 ## Скачать
+* [google store](https://chrome.google.com/webstore/detail/vk-charts/mbbonpdbhkfpcddfojmigibngoiamloo)
 * [github](https://github.com/Phil9l/vk-friends-statistics/releases)

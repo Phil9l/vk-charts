@@ -1,15 +1,15 @@
 {
   "manifest_version": 2,
   "name": "VK Charts",
-  "description": "Allows to see statistics based on user vk profile.",
-  "version": "1.0.4",
+  "description": "Показывает статистику на странице профиля вконтакте.",
+  "version": "1.0.5",
   "permissions": [
     "tabs",
     "storage",
-    "http://*.vk.com/*",
     "http://vk.com/*",
-    "https://*.vk.com/*",
-    "https://vk.com/*"
+    "https://vk.com/*",
+    "http://*.vk.com/*",
+    "https://*.vk.com/*"
   ],
   "icons": {
     "48": "images/icons/icon48.png",
