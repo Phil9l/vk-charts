@@ -1,14 +1,24 @@
 $(function() {
-    chrome.runtime.sendMessage({method: "getCurrentUserInfo"}, function(response) {
-        if (!$.isEmptyObject(response)) {
-            $('.name').attr('href', 'http://vk.com/id' + response.id);
-            $('.name').text(response.first_name + ' ' + response.last_name);
-            $('.avatar').css("background-image", "url(" + response.photo_max + ")");
-            $('.user-auth').hide();
-        } else {
-            $('.user-description').hide();
-        }
-    });
+    function update_user_info(response) {
+        $('.user-description').show();
+        $('.name').attr('href', 'http://vk.com/id' + response.uid);
+        $('.name').text(response.first_name + ' ' + response.last_name);
+        $('.avatar').css("background-image", "url(" + response.photo_max + ")");
+        $('.user-auth').hide();
+    }
+
+    $('.user-description').hide();
+    userCheck();
+    var userCheckInterval = setInterval(userCheck, 1000);
+
+    function userCheck() {
+        chrome.runtime.sendMessage({method: "getCurrentUserInfo"}, function(response) {
+            if (!$.isEmptyObject(response)) {
+                update_user_info(response);
+                clearInterval(userCheckInterval);
+            }
+        });
+    }
 
     $('.logout').click(function() {
         chrome.runtime.sendMessage({method: "logout"}, function(response) {

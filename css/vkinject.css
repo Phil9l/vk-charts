@@ -7,7 +7,7 @@
 .friends-chart-wrapper-dropdown {
     /* Size & position */
     position: relative;
-    width: 160px;
+    width: 180px;
     margin: 0 auto;
     margin-left: -15px;
     margin-top: -5px;
@@ -19,7 +19,6 @@
 
     /* Styles */
     font-family: tahoma, arial, verdana, sans-serif, Lucida Sans;
-    font-size: 11px;
     color: #2B587A;
     cursor: pointer;
     outline: none;
@@ -29,7 +28,7 @@
     -o-transition: all 0.3s ease-out;
     transition: all 0.3s ease-out;
 }
-
+ a
 .friends-chart-wrapper-dropdown i{
     font-size: 15px;
 }
@@ -75,7 +74,7 @@
     margin: 0;
 }
 
-.friends-chart-wrapper-dropdown .friends-chart-dropdown li a {
+.friends-chart-wrapper-dropdown .friends-chart-dropdown li span {
     display: block;
     text-decoration: none;
     color: #2B587A;
@@ -83,7 +82,7 @@
     transition: all 0.3s ease-out;
 }
 
-.friends-chart-wrapper-dropdown .friends-chart-dropdown li:last-of-type a {
+.friends-chart-wrapper-dropdown .friends-chart-dropdown li:last-of-type span {
     border: none;
 }
 
@@ -95,7 +94,7 @@
 
 /* Hover state */
 
-.friends-chart-wrapper-dropdown .friends-chart-dropdown li:hover a {
+.friends-chart-wrapper-dropdown .friends-chart-dropdown li:hover span {
     background: #e1e7ed;
 }
 
@@ -111,4 +110,8 @@
 .friends-chart-wrapper-dropdown.active .friends-chart-dropdown {
     border-bottom: 1px solid rgba(0,0,0,0.2);
     max-height: 400px;
+}
+
+.friend-statistic-container-new .friends-statistics-selector {
+  margin-top: 10px;
 }

@@ -1,6 +1,8 @@
 var MAX_LEGEND_STRING_LENGTH = 25;
 var MAX_LEGEND_ITEMS_NUMBER = 18;
 var UPDATE_TIMEOUT = 100;
+var OLD_SELECTOR = '#profile_short .profile_info';
+var NEW_SELECTOR = '#profile_short';
 
 /**
  * Pads string with zeroes upto given length.
@@ -141,7 +143,7 @@ DropDown.prototype = {
         var obj = this;
         obj.dd.on('click', function(event){
             $(this).toggleClass('active');
-            if ($(event.target).is('a')){
+            if ($(event.target).is('span')){
                 $('.friend-statistic').hide();
                 $('.friend-statistic[statistic-type="' + $(event.target).attr('statistic-type') + '"]').show();
                 $('.friends-chart-current-choice').text($(event.target).text());
@@ -151,14 +153,15 @@ DropDown.prototype = {
     }
 };
 
-function renderCharts() {
+function renderCharts(version) {
     var user = document.location.pathname.slice(1);
+    var blockWidth = version === 'old' ? 400 : 510;
     chrome.runtime.sendMessage({method: "isUser", user: user}, function(user_response) {
         if (!$.isEmptyObject(user_response)) {
-            $('#profile_short').before('<div class="friend-statistic-container"></div>');
+            $('#profile_short').before('<div class="friend-statistic-container ' + 'friend-statistic-container-' + version + '"></div>');
             if ($('#friends-chart-dropdown') !== 0) {
                 $('.friend-statistic-container').append(
-                    '<div class="profile_info"><div class="clear_fix">' +
+                    '<div class="profile_info"><div class="clear_fix friends-statistics-selector">' +
                         '<div class="label fl_l">Статистика по друзьям:</div>' +
                         '<div class="labeled fl_l usual-overflow">' +
                             '<div id="fcdd" class="friends-chart-wrapper-dropdown"><span class="friends-chart-current-choice">Показать статистику</span>' +
@@ -185,31 +188,31 @@ function renderCharts() {
                         'name': 'Статистика городов',
                         'statistics_type': 'cities',
                         'canvasType': 'Pie',
-                        'width': 400,
+                        'width': blockWidth,
                         'height': 350,
                     }, {
                         'name': 'Статистика возрастов',
                         'statistics_type': 'age',
                         'canvasType': 'Bar',
-                        'width': 400,
+                        'width': blockWidth,
                         'height': 250,
                     }, {
                         'name': 'Статистика университетов',
                         'statistics_type': 'universities',
                         'canvasType': 'Pie',
-                        'width': 400,
+                        'width': blockWidth,
                         'height': 350,
                     }, {
                         'name': 'Статистика школ',
                         'statistics_type': 'schools',
                         'canvasType': 'Pie',
-                        'width': 400,
+                        'width': blockWidth,
                         'height': 350,
                     },
                 ];
 
                 for (var option = 0; option < options.length; option++) {
-                    $('.friends-chart-dropdown').append('<li class="friends-chart-dropdown-item"><a statistic-type="' + options[option].statistics_type + '" href="#">' + options[option].name + '</a></li>');
+                    $('.friends-chart-dropdown').append('<li class="friends-chart-dropdown-item"><span statistic-type="' + options[option].statistics_type + '" href="#">' + options[option].name + '</span></li>');
                 }
                 $('.friends-chart-current-choice').text(options[stateIndex].name);
 
@@ -236,11 +239,21 @@ function renderCharts() {
     });
 }
 
-setInterval(function () {
+function injectToPage(version) {
+    var injectBlockSelector = version === 'old' ? OLD_SELECTOR : NEW_SELECTOR;
+
     if ($('#profile_short').length !== 0 && $('.vk-statistics-was-used').length === 0 && $('.friend-statistic-container').length === 0) {
-        $('#profile_short .profile_info').append('<div class="clear_fix vk-statistics-was-used"></div>');
+        $(injectBlockSelector).append('<div class="clear_fix vk-statistics-was-used"></div>');
         setTimeout(function () {
-            renderCharts();
+            renderCharts(version);
         }, UPDATE_TIMEOUT);
+    }
+}
+
+setInterval(function () {
+    if ($('.profile_info_short').length === 0) {
+        injectToPage('old');
+    } else {
+        injectToPage('new');
     }
 }, UPDATE_TIMEOUT);
