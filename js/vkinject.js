@@ -238,7 +238,6 @@ function renderCharts(version) {
 }
 
 function injectToPage(version) {
-    console.log($('.vk-statistics-was-used').length);
     if ($('#profile_short').length !== 0 && $('.vk-statistics-was-used').length === 0 && $('.friend-statistic-container').length === 0) {
         $('#profile_short').append('<div class="clear_fix vk-statistics-was-used"></div>');
         setTimeout(function () {
