@@ -242,7 +242,9 @@ function injectToPage(version) {
         $('#profile_short').append('<div class="clear_fix vk-statistics-was-used"></div>');
         setTimeout(function () {
             renderCharts(version);
-        }, UPDATE_TIMEOUT);
+            $(".friend-statistic-container:not(:first)").remove();
+            $(".friends-statistics-selector:not(:first)").remove();
+        }, 1);
     }
 }
 

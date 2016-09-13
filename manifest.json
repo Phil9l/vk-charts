@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "VK Charts",
   "description": "Показывает статистику на странице профиля вконтакте.",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "permissions": [
     "tabs",
     "storage",
