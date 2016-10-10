@@ -84,7 +84,7 @@ function clearSession() {
 /** Saves vkontakte API key into the local strorage. */
 function getToken() {
     var client_id = 5300315;
-    var authUrl = 'https://oauth.vk.com/authorize?client_id=' + client_id + '&scope=users&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&display=page&response_type=token';
+    var authUrl = 'https://oauth.vk.com/authorize?client_id=' + client_id + '&scope=users,offline&redirect_uri=http%3A%2F%2Foauth.vk.com%2Fblank.html&display=page&response_type=token';
     chrome.tabs.create({url: authUrl,selected: true}, function(tab) {
         authTabId = tab.id;
         chrome.tabs.onUpdated.addListener(function tabUpdateListener(tabId, changeInfo) {
